@@ -8,11 +8,11 @@ KAFKA_SASL_PASSWORD=admin
 KAFKA_CLUSTER_ID=1#V7OLY7FyQeSH2e0TKHaGLA # Example Cluster ID, use 'uuidgen' to create a new one
 
 CONSUMER=consumer
-CONSUMER_IMAGE=christian-dienbauer/kafka-consumer:latest
+CONSUMER_IMAGE=chrdie/kafka-consumer:no-sasl
 
 
 PRODUCER=producer
-PRODUCER_IMAGE=christian-dienbauer/kafka-producer:latest
+PRODUCER_IMAGE=chrdie/kafka-producer:no-sasl
 
 # Create a Docker network
 .PHONY: network
@@ -49,36 +49,19 @@ start-kafka-no-sasl: network
 
 .PHONY: consumer
 consumer:
-	docker run --name $(CONSUMER) --network $(DOCKER_NETWORK) christian-dienbauer/kafka-consumer:latest
+	docker run --name $(CONSUMER) --network $(DOCKER_NETWORK) $(CONSUMER_IMAGE)
 
 .PHONY: producer
 producer:
-	docker run --name $(PRODUCER) --network $(DOCKER_NETWORK) christian-dienbauer/kafka-producer:latest
-
-.PHONY: consumer-no-sasl
-consumer-no-sasl:
-	docker run --name $(CONSUMER) --network $(DOCKER_NETWORK) christian-dienbauer/kafka-consumer:no-sasl
-
-.PHONY: producer-no-sasl
-producer-no-sasl:
-	docker run --name $(PRODUCER) --network $(DOCKER_NETWORK) christian-dienbauer/kafka-producer:no-sasl
-
+	docker run --name $(PRODUCER) --network $(DOCKER_NETWORK) $(PRODUCER_IMAGE)
 
 .PHONY: build-consumer
 build-consumer:
-	docker build -t christian-dienbauer/kafka-consumer:latest -f docker/consumer.Dockerfile .
+	docker build -t $(CONSUMER_IMAGE) -f docker/consumer.Dockerfile .
 
 .PHONY: build-producer
 build-producer:
-	docker build -t christian-dienbauer/kafka-producer:latest -f docker/producer.Dockerfile .
-
-.PHONY: build-consumer-no-sasl
-build-consumer-no-sasl:
-	docker build -t christian-dienbauer/kafka-consumer:no-sasl -f docker/consumer.Dockerfile .
-
-.PHONY: build-producer-no-sasl
-build-producer-no-sasl:
-	docker build -t christian-dienbauer/kafka-producer:no-sasl -f docker/producer.Dockerfile .
+	docker build -t $(PRODUCER_IMAGE) -f docker/producer.Dockerfile .
 
 # Stop Kafka container
 .PHONY: stop

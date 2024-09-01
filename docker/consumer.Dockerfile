@@ -15,7 +15,7 @@ RUN apk add --no-cache --update \
     openssl-dev
 
 # Copy the rest of the application code into the container
-COPY src/kafka-consumer/ .
+COPY src/kafka-consumer/*.py .
 COPY requirements.txt .
 
 # Install Python dependencies (if you have a requirements.txt)

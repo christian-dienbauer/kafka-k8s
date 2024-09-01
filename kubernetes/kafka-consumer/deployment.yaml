@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-deployment
+  namespace: development
+  labels:
+    app: consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+      - name: consumer-container
+        image: chrdie/kafka-consumer:latest
+        env:
+        - name: KAFKA_TOPIC
+          value: test
+        - name: KAFKA_BOOTSTRAP_SERVER
+          value: kafka-controller-0.kafka-controller-headless.development.svc.cluster.local:9092
+        - name: KAFKA_CONSUMER_GROUP
+          value: admin
+        - name: KAFKA_SECURITY_PROTOCOL
+          value: SASL_PLAINTEXT
+        - name: KAFKA_SASL_MECHANISM
+          value: SCRAM-SHA-512
+        - name: KAFKA_USERNAME
+          value: user1
+        - name: KAFKA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kafka-user-passwords
+              key: client-passwords
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"

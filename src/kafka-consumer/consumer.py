@@ -18,7 +18,7 @@ class Consumer:
             sasl_plain_password=self.__config["KAFKA_PASSWORD"],
             security_protocol=self.__config["KAFKA_SECURITY_PROTOCOL"],
             sasl_mechanism=self.__config["KAFKA_SASL_MECHANISM"],
-            api_version=(3, 5, 1),
+            # api_version=(3, 5, 1), # Can't connect to Broker, even with 3.6.0
             auto_offset_reset="earliest",
         )
 
